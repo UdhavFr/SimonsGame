@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Simon</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+</head>
+
+<body>
+  <h1 id="level-title">Press A Key to Start</h1>
+  <div class="container">
+    <div class="row">
+
+      <div type="button" id="green" class="btn green">
+
+      </div>
+
+      <div type="button" id="red" class="btn red">
+
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div type="button" id="yellow" class="btn yellow">
+
+      </div>
+      <div type="button" id="blue" class="btn blue">
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script>
+    var randArray = new Array();
+    var userArray = new Array();
+    var btnColors = ["green", "red", "yellow", "blue"];
+    var started = false;
+    var click;
+    var round = 1;
+    $(document).keypress(function () {
+      if (!started) {
+        started = true;
+        firstSeq();
+      }
+    });
+    $(".btn").click(clickInp);
+
+    function firstSeq() {
+      $("#level-title").text("Level " + round);
+      click = 0;
+      var randNum = Math.floor(Math.random() * 4);
+      var randColor = btnColors[randNum];
+      randArray.push(randColor);
+      $("." + randColor).fadeOut(100).fadeIn(100);
+    }
+
+    function clickInp(e) {
+      if (started) {
+        var btnName = e.target.id;
+        userArray.push(btnName);
+        clickBtn = $("." + btnName);
+        clickBtn.addClass("pressed");
+        setTimeout(function () {
+          clickBtn.removeClass("pressed");
+        }, 100);
+        console.log(userArray);
+        console.log(randArray);
+        check();
+      }
+    }
+
+    function check() {
+      if (userArray[click] === randArray[click]) {
+        click++;
+        if (click >= round) {
+          setTimeout(function () {
+            round++;
+            userArray = [];
+            firstSeq();
+          }, 1000)
+        }
+      }
+      else {
+        $("#level-title").text("Game Over");
+        $('body').addClass("game-over");
+        setTimeout(function () {
+          $('body').removeClass("game-over");
+          $("#level-title").text("Press A Key to Start");
+        }, 1000)
+        randArray = [];
+        userArray = [];
+        started = false;
+        round = 1;
+      }
+    }
+
+  </script>
+
+</body>
+
+</html>
